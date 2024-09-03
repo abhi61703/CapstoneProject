@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
+
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
@@ -33,8 +34,11 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    // Updated method to include userId in the token
     public String generateToken(User userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", userDetails.getId()); // Adding userId to the claims
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {

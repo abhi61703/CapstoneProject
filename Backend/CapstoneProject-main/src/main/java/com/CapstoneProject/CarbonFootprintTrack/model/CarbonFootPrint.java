@@ -5,9 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -29,8 +27,13 @@ public class CarbonFootPrint {
     private double transportation;
     private double electricity;
     private double wastage;
+
+
+
+    @Getter
+    @Setter
     private double carbon_footprint;
 
     // Set a default value for totalCarbonFootprint
-    private double totalCarbonFootprint = 0.0;
+    private double totalCarbonFootprint;
 }

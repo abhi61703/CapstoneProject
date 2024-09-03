@@ -8,10 +8,9 @@ import com.serviceharbor.auth.responses.LoginResponse;
 import com.serviceharbor.auth.service.AuthenticationService;
 import com.serviceharbor.auth.service.JwtService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+@CrossOrigin(origins = "http://localhost:3000")
 
 @RequestMapping("/auth")
 @RestController

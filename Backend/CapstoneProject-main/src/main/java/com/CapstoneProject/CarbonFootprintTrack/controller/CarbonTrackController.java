@@ -30,29 +30,6 @@ public class CarbonTrackController {
     @Autowired
     private LeaderBoardService leaderBoardService;
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Map<String, String>> addUser(@RequestBody RegisterDto registerDto) {
-//        String message = userService.UserRegister(registerDto);
-//        Map<String, String> response = new HashMap<>();
-//        response.put("message", message);
-//        return ResponseEntity.ok(response);
-//    }
-
-//    @PostMapping("/register")
-//    public ResponseEntity<Map<String, String>> addUser(@RequestBody RegisterDto registerDto) {
-//        System.out.println("Reached the addUser method");
-//        Map<String, String> response = new HashMap<>();
-//        response.put("message", "User registration method reached");
-//        return ResponseEntity.ok(response);
-//    }
-//
-//
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginDto loginDto) {
-//        Map<String, String> response = userService.UserLogin(loginDto);
-//        return ResponseEntity.ok(response);
-//    }
 
     @GetMapping("/profile/{userId}")
     public UserDto getUserProfile(@PathVariable Long userId) {

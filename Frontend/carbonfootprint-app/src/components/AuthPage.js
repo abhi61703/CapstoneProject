@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,12 +21,12 @@ const AuthPage = () => {
     }
 
     try {
-      const endpoint = isRegistering ? 'register' : 'login';
+      const endpoint = isRegistering ? 'signup' : 'login';
       const payload = isRegistering
-        ? { username, email, password, city }
-        : { username, password };
+        ? { name, email, password, city }
+        : { email, password };
 
-      const response = await fetch(`http://localhost:6688/carbonTrack/${endpoint}`, {
+      const response = await fetch(`http://localhost:9999/auth/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,34 +34,45 @@ const AuthPage = () => {
         body: JSON.stringify(payload),
       });
 
-      if (response.ok) {
-        const contentType = response.headers.get('Content-Type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          console.log('Response Data:', data);
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        console.log('Response data:', data); // Debug: Log the entire response data
 
-          // Store userId upon successful login or registration
-          localStorage.setItem('userId', data.userId);
+        if (response.ok && data.token) {
+          // Decode the JWT token
+          const decodedToken = jwtDecode(data.token);
+          console.log('Decoded token:', decodedToken); // Debug: Log the decoded token
 
-          if (isRegistering) {
-            setError('Registration successful! Please log in.');
-            // Clear form fields after registration
-            setUsername('');
-            setEmail('');
-            setPassword('');
-            setConfirmPassword('');
-            setCity('');
-            setIsRegistering(false);
+          // Check if the decoded token contains a user ID
+          if (decodedToken.userId) {
+            const userId = decodedToken.userId 
+            localStorage.setItem('userId', userId);
+            localStorage.setItem('jwtToken', data.token);
+
+            if (isRegistering) {
+              setError('Registration successful! Please log in.');
+              // Clear form fields after registration
+              setName('');
+              setEmail('');
+              setPassword('');
+              setConfirmPassword('');
+              setCity('');
+              setIsRegistering(false);
+            } else {
+              navigate('/carbontracker'); // Redirect to CarbonTracker after login
+            }
           } else {
-            navigate('/carbontracker');
+            console.error('User ID not found in token:', decodedToken);
+            setError('Login successful, but there was an issue with the token. Please contact support.');
           }
         } else {
-          setError('Received non-JSON response. Please check the server.');
+          // If response is not ok or token is missing, set the error message from the response
+          setError(data.message || 'An error occurred. Please try again.');
         }
       } else {
-        // Check for server errors
-        const errorData = await response.json();
-        setError(errorData.message || 'An error occurred. Please try again.');
+        console.error('Received non-JSON response:', await response.text());
+        setError('Received non-JSON response. Please check the server.');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -77,11 +89,11 @@ const AuthPage = () => {
           
           {isRegistering && (
             <>
-              <label className="block text-gray-700 font-bold mb-2">Username</label>
+              <label className="block text-gray-700 font-bold mb-2">Name</label>
               <input
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg mb-4"
                 required
               />
@@ -126,11 +138,11 @@ const AuthPage = () => {
           
           {!isRegistering && (
             <>
-              <label className="block text-gray-700 font-bold mb-2">Username</label>
+              <label className="block text-gray-700 font-bold mb-2">Email</label>
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg mb-4"
                 required
               />

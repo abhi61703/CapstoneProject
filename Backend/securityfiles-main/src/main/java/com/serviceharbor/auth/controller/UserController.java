@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/users") // Adding base path for clarity
 public class UserController {
