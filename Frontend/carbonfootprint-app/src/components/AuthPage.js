@@ -14,18 +14,18 @@ const AuthPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (isRegistering && password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
-
+  
     try {
       const endpoint = isRegistering ? 'signup' : 'login';
       const payload = isRegistering
         ? { name, email, password, city }
         : { email, password };
-
+  
       const response = await fetch(`http://localhost:9999/auth/${endpoint}`, {
         method: 'POST',
         headers: {
@@ -33,38 +33,39 @@ const AuthPage = () => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       const contentType = response.headers.get('Content-Type');
       if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
         console.log('Response data:', data); // Debug: Log the entire response data
-
-        if (response.ok && data.token) {
-          // Decode the JWT token
-          const decodedToken = jwtDecode(data.token);
-          console.log('Decoded token:', decodedToken); // Debug: Log the decoded token
-
-          // Check if the decoded token contains a user ID
-          if (decodedToken.userId) {
-            const userId = decodedToken.userId 
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('jwtToken', data.token);
-
-            if (isRegistering) {
-              setError('Registration successful! Please log in.');
-              // Clear form fields after registration
-              setName('');
-              setEmail('');
-              setPassword('');
-              setConfirmPassword('');
-              setCity('');
-              setIsRegistering(false);
-            } else {
+  
+        if (response.ok) {
+          if (!isRegistering && data.token) { // Only decode the token during login
+            // Decode the JWT token
+            const decodedToken = jwtDecode(data.token);
+            console.log('Decoded token:', decodedToken); // Debug: Log the decoded token
+  
+            // Check if the decoded token contains a user ID
+            if (decodedToken.userId) {
+              const userId = decodedToken.userId;
+              console.log(userId);
+              localStorage.setItem('userId', userId);
+              localStorage.setItem('jwtToken', data.token);
+  
               navigate('/carbontracker'); // Redirect to CarbonTracker after login
+            } else {
+              console.error('User ID not found in token:', decodedToken);
+              setError('Login successful, but there was an issue with the token. Please contact support.');
             }
-          } else {
-            console.error('User ID not found in token:', decodedToken);
-            setError('Login successful, but there was an issue with the token. Please contact support.');
+          } else if (isRegistering) {
+            setError('Registration successful! Please log in.');
+            // Clear form fields after registration
+            setName('');
+            setEmail('');
+            setPassword('');
+            setConfirmPassword('');
+            setCity('');
+            setIsRegistering(false);
           }
         } else {
           // If response is not ok or token is missing, set the error message from the response
@@ -79,6 +80,7 @@ const AuthPage = () => {
       setError('An error occurred. Please try again.');
     }
   };
+  
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">

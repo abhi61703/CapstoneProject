@@ -312,12 +312,12 @@ const HomePage = () => {
       {renderCharts()}
       {renderNewsLinks()}
       {renderYouTubeLinks()}
-      <div className="my-8">
+      {/* <div className="my-8">
         <h3 className="text-lg font-semibold mb-4">Community Posts</h3>
         <div className="bg-white p-4 rounded shadow-lg">
           <p>{communityPosts}</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

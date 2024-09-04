@@ -1,6 +1,6 @@
 spring:
   application:
-    name: UserManagement
+    name: ApiGateway
 
   datasource:
     url: jdbc:mysql://localhost:3306/capstone
@@ -15,18 +15,16 @@ spring:
 
   cloud:
     gateway:
-      mvc:
-        routes:
-          - id: carbonTrack-route
-            uri: lb://CARBONFOOTPRINTTRACK
-            predicates:
-              - Path=/carbonTrack/**
+      routes:
+        - id: carbonTrack-route
+          uri: lb://CARBONFOOTPRINTTRACK
+          predicates:
+            - Path=/carbonTrack/**
 
-          # Uncomment and modify the following block if you need additional routes
-          # - id: lbservice2-route
-          #   uri: lb://EXPENSE
-          #   predicates:
-          #     - Path=/expenses/**
+        - id: communityservice-route
+          uri: lb://COMMUNITYSERVICE
+          predicates:
+            - Path=/community/**
 
     discovery:
       enabled: true
@@ -59,4 +57,3 @@ security:
   jwt:
     secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
     expiration-time: 86400000
-

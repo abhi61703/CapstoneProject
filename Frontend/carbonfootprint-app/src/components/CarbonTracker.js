@@ -99,9 +99,9 @@ const CarbonTracker = () => {
   const updateTotalEmissions = (latestData) => {
     // This is a placeholder. You might need to adjust this based on how your backend provides category-specific data
     setTotalEmissions({
-      transportation: latestData.totalCarbonFootprint * 0.4, // Example: 40% of total
+      transportation: latestData.totalCarbonFootprint * 0.5, // Example: 40% of total
       electricity: latestData.totalCarbonFootprint * 0.3, // Example: 30% of total
-      waste: latestData.totalCarbonFootprint * 0.3 // Example: 30% of total
+      waste: latestData.totalCarbonFootprint * 0.2 // Example: 30% of total
     });
   };
 
@@ -179,9 +179,8 @@ const CarbonTracker = () => {
           'Authorization': `Bearer ${token}`,
         }
       });
-  
-      const { totalCarbonFootprint } = response.data;
-      alert(`Your total carbon footprint is ${totalCarbonFootprint} kgCO2e`);
+      console.log(response.data);
+      alert(`Your total carbon footprint is "${response.data}" kgCO2e`);
       
       // Refresh dashboard data after submission
       fetchDashboardData();
@@ -264,25 +263,35 @@ const CarbonTracker = () => {
       </header>
 
       <div className="my-8 text-center">
-        <h2 className="text-2xl font-semibold">Latest Total Emissions</h2>
-        <div className="flex justify-around mt-4">
-          <div className="text-center bg-white p-4 rounded shadow-lg w-1/4">
-            <h3 className="text-lg font-semibold">Transportation</h3>
-            <p>{totalEmissions.transportation.toFixed(2)} kgCO2e</p>
-          </div>
-          <div className="text-center bg-white p-4 rounded shadow-lg w-1/4">
-            <h3 className="text-lg font-semibold">Electricity</h3>
-            <p>{totalEmissions.electricity.toFixed(2)} kgCO2e</p>
-          </div>
-          <div className="text-center bg-white p-4 rounded shadow-lg w-1/4">
-            <h3 className="text-lg font-semibold">Waste</h3>
-            <p>{totalEmissions.waste.toFixed(2)} kgCO2e</p>
-          </div>
-        </div>
-        <button onClick={() => { setShowLeaderboard(!showLeaderboard); if (!showLeaderboard) fetchLeaderboardData(); }} className="p-2 bg-green-500 text-white rounded">Leaderboard</button>
-        {error && <p className="text-red-500">{error}</p>}
-        {showLeaderboard && renderLeaderboard()}
-      </div>
+  <h2 className="text-2xl font-semibold">Latest Total Emissions</h2>
+  <div className="flex justify-around mt-4">
+    <div className="text-center bg-white p-4 rounded shadow-lg w-1/4">
+      <h3 className="text-lg font-semibold">Transportation</h3>
+      <p>{totalEmissions.transportation.toFixed(2)} kgCO2e</p>
+    </div>
+    <div className="text-center bg-white p-4 rounded shadow-lg w-1/4">
+      <h3 className="text-lg font-semibold">Electricity</h3>
+      <p>{totalEmissions.electricity.toFixed(2)} kgCO2e</p>
+    </div>
+    <div className="text-center bg-white p-4 rounded shadow-lg w-1/4">
+      <h3 className="text-lg font-semibold">Waste</h3>
+      <p>{totalEmissions.waste.toFixed(2)} kgCO2e</p>
+    </div>
+  </div>
+
+  <div className="mt-6">
+    <button
+      onClick={() => { setShowLeaderboard(!showLeaderboard); if (!showLeaderboard) fetchLeaderboardData(); }}
+      className="p-2 bg-green-500 text-white rounded"
+    >
+      Leaderboard
+    </button>
+  </div>
+
+  {error && <p className="text-red-500 mt-4">{error}</p>}
+  {showLeaderboard && renderLeaderboard()}
+</div>
+
       <section className="mb-8">
         <h2 className="text-2xl font-semibold text-center">Carbon Emissions History</h2>
         <div className="max-w-4xl mx-auto">

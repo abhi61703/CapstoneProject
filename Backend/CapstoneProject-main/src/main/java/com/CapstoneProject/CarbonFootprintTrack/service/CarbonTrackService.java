@@ -136,6 +136,7 @@ public class CarbonTrackService {
         carbonFootprint.setElectricity(electricityEmissions);
         carbonFootprint.setCarbon_footprint(totalEmissions);
 
+
         // Update user total carbon footprint via Feign client
         User user = userFeignClient.getUserById(form.getUserId());
         if (user == null) {
@@ -143,6 +144,7 @@ public class CarbonTrackService {
         }
         user.setTotalCarbonFootprint(user.getTotalCarbonFootprint() + totalEmissions);
         userFeignClient.updateUser(form.getUserId(), user);
+        carbonTrackRepository.save(carbonFootprint);
 
         // Update or create leaderboard entry
         leaderBoard leaderboard = leaderboardRepository.findById(form.getUserId())
@@ -159,7 +161,7 @@ public class CarbonTrackService {
         // Save CarbonFootprint record
         carbonTrackRepository.save(carbonFootprint);
 
-        return ResponseEntity.ok("Carbon footprint submitted successfully with total emissions: " + totalEmissions);
+        return ResponseEntity.ok(totalEmissions+"");
     }
 
 

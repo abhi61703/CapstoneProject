@@ -27,13 +27,9 @@ public class CarbonFootPrint {
     private double transportation;
     private double electricity;
     private double wastage;
-
-
-
     @Getter
     @Setter
     private double carbon_footprint;
 
-    // Set a default value for totalCarbonFootprint
-    private double totalCarbonFootprint;
+
 }
