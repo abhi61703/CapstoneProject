@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Line, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement } from 'chart.js';
@@ -203,6 +203,36 @@ const HomePage = () => {
       </div>
     );
   };
+
+  const getLocation = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        // Reverse geocode to get city and state
+        const reverseGeocodeResponse = await axios.get(
+          `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=02bdc71378d845fd8faa3d0d5de0a4e9`
+        );
+        const { county, state } = reverseGeocodeResponse.data.results[0].components;
+        console.log(reverseGeocodeResponse.data.results[0].components);
+        if (county && state) {
+          setLocation(`${county}, ${state}`);
+          handleSearch();
+        } else {
+          console.error('Unable to determine city and state from coordinates.');
+        }
+      }, (error) => {
+        console.error('Error getting location:', error);
+      });
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
 
   const renderCharts = () => {
     if (!weatherData.temperature) return null;
