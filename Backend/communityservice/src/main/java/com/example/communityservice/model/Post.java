@@ -1,52 +1,31 @@
 package com.example.communityservice.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.List;
+
+@Data
 @Entity
-@Table(name = "posts")
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long postId;
 
-    @Column(nullable = false)
-    private String title;
+    private Long userId;
+    private String userName;
+    private String postTitle;
+    private String postCaption;
 
-    @Column(nullable = false)
-    private String content;
+    // Save the image as a URL pointing to the uploaded file
+    private String imageUrl;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    // Likes count
+    private int likes = 0;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Comments stored as a list of strings (can later be converted to a separate entity if needed)
+    @ElementCollection
+    private List<String> comments;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    // Constructors
-    public Post() {
-    }
-
-    public Post(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+    // Constructors, Getters, and Setters (Lombok @Data handles this)
 }
